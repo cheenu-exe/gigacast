@@ -185,12 +185,31 @@ export default function Home() {
         maxBufferLength: 30,
       });
       hlsRef.current = hls;
+      let networkRecoveries = 0;
+      let mediaRecoveries = 0;
       hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
-          setPlaybackError("This stream is unavailable or incompatible with browser playback.");
-          hls.destroy();
-          hlsRef.current = null;
+        if (!data.fatal) return;
+
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && networkRecoveries < 2) {
+          networkRecoveries += 1;
+          hls.startLoad();
+          return;
         }
+
+        if (data.type === Hls.ErrorTypes.MEDIA_ERROR && mediaRecoveries < 1) {
+          mediaRecoveries += 1;
+          hls.recoverMediaError();
+          return;
+        }
+
+        const message = data.type === Hls.ErrorTypes.NETWORK_ERROR
+          ? "The stream stopped responding. The channel may be offline or its server may be blocking playback."
+          : data.type === Hls.ErrorTypes.MEDIA_ERROR
+            ? "The stream's video data could not be decoded after recovery. Try another channel."
+            : "This stream is incompatible with browser playback or the provider rejected the request.";
+        setPlaybackError(message);
+        hls.destroy();
+        if (hlsRef.current === hls) hlsRef.current = null;
       });
       hls.loadSource(activeChannel.url);
       hls.attachMedia(video);
