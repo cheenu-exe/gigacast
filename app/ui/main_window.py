@@ -134,7 +134,6 @@ class MainWindow(QMainWindow):
         self.channel_list = QListWidget()
         self.channel_list.setObjectName("channelList")
         self.channel_list.currentItemChanged.connect(self._on_channel_selected)
-        self.channel_list.itemDoubleClicked.connect(self._on_channel_double_clicked)
         side_layout.addWidget(self.channel_list, 1)
 
         self.channel_count = QLabel("0 channels")
@@ -327,7 +326,11 @@ class MainWindow(QMainWindow):
             if channel.url == previous_url:
                 selected_row = self.channel_list.count() - 1
 
-        if selected_row < 0 and self.channel_list.count():
+        if (
+            selected_row < 0
+            and self._current_channel is None
+            and self.channel_list.count()
+        ):
             selected_row = 0
         self.channel_list.setCurrentRow(selected_row)
         self.channel_list.blockSignals(False)
@@ -357,7 +360,10 @@ class MainWindow(QMainWindow):
         for row in range(self.channel_list.count()):
             item = self.channel_list.item(row)
             if item.data(Qt.ItemDataRole.UserRole) == channel:
+                self.channel_list.blockSignals(True)
                 self.channel_list.setCurrentRow(row)
+                self.channel_list.blockSignals(False)
+                self._play_channel(channel)
                 break
 
     def _add_stream(self) -> None:
@@ -419,11 +425,6 @@ class MainWindow(QMainWindow):
             return
         channel = current.data(Qt.ItemDataRole.UserRole)
         if isinstance(channel, Channel) and channel != self._current_channel:
-            self._play_channel(channel)
-
-    def _on_channel_double_clicked(self, item: QListWidgetItem) -> None:
-        channel = item.data(Qt.ItemDataRole.UserRole)
-        if isinstance(channel, Channel):
             self._play_channel(channel)
 
     def _play_channel(self, channel: Channel) -> None:
