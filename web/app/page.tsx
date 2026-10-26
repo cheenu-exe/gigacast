@@ -355,7 +355,7 @@ export default function Home() {
             <div className="error-banner"><AlertCircle size={18} /><div><strong>Couldn’t load the channel list</strong><p>{error}</p></div><button onClick={() => void loadChannels({ reset: true })}>Retry</button></div>
           )}
 
-          {loading && channels.length === 0 ? (
+          {loading && channels.length === 0 && !showFavorites ? (
             <div className="loading-state"><LoaderCircle className="spin" size={25} /><span>Finding channels around the world…</span></div>
           ) : visibleChannels.length === 0 ? (
             <div className="empty-state"><Tv2 size={28} /><strong>{showFavorites ? "No favorites yet" : "No channels found"}</strong><p>{showFavorites ? "Tap the heart on a channel to save it here." : "Try a different search or category."}</p></div>
