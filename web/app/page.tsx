@@ -326,7 +326,7 @@ export default function Home() {
               {loadingMore ? <><LoaderCircle size={16} className="spin" /> Loading channels…</> : <>Load more channels <ChevronDown size={16} /></>}
             </button>
           )}
-          <footer className="footer"><span>VLCAST <span className="footer-dot">●</span> MADE FOR THE MOMENT</span><span>Playback varies by stream and browser.</span></footer>
+          <footer className="footer"><span>GigaCast <span className="footer-dot">●</span> MADE FOR THE MOMENT</span><span>Playback varies by stream and browser.</span></footer>
         </section>
       </div>
     </main>
