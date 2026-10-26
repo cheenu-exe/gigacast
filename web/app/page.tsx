@@ -52,8 +52,8 @@ export default function Home() {
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [query, setQuery] = useState("");
   const [activeGroup, setActiveGroup] = useState("");
-  const [favorites, setFavorites] = useState<string[]>([]);
   const [favoriteChannels, setFavoriteChannels] = useState<Channel[]>([]);
+  const favorites = useMemo(() => favoriteChannels.map((channel) => channel.id), [favoriteChannels]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -109,6 +109,56 @@ export default function Home() {
     }, query || activeGroup ? 220 : 0);
     return () => window.clearTimeout(timer);
   }, [query, activeGroup]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("gigacast:favorites");
+      if (!saved) return;
+      const parsed: unknown = JSON.parse(saved);
+      if (!Array.isArray(parsed)) return;
+      const validChannels = parsed.filter((item): item is Channel =>
+        item !== null &&
+        typeof item === "object" &&
+        typeof item.id === "string" &&
+        typeof item.name === "string" &&
+        typeof item.url === "string" &&
+        typeof item.logo === "string" &&
+        typeof item.group === "string" &&
+        typeof item.country === "string" &&
+        typeof item.tvgId === "string"
+      );
+      const uniqueChannels = Array.from(new Map(validChannels.map((channel) => [channel.id, channel])).values());
+      setFavoriteChannels(uniqueChannels);
+    } catch {
+      // Ignore malformed or unavailable browser storage and keep favorites usable in memory.
+    }
+  }, []);
+
+  useEffect(() => {
+    const syncFavorites = (event: StorageEvent) => {
+      if (event.key !== "gigacast:favorites") return;
+      try {
+        const parsed: unknown = event.newValue ? JSON.parse(event.newValue) : [];
+        if (!Array.isArray(parsed)) return;
+        const validChannels = parsed.filter((item): item is Channel =>
+          item !== null &&
+          typeof item === "object" &&
+          typeof item.id === "string" &&
+          typeof item.name === "string" &&
+          typeof item.url === "string" &&
+          typeof item.logo === "string" &&
+          typeof item.group === "string" &&
+          typeof item.country === "string" &&
+          typeof item.tvgId === "string"
+        );
+        setFavoriteChannels(Array.from(new Map(validChannels.map((channel) => [channel.id, channel])).values()));
+      } catch {
+        // Ignore invalid cross-tab updates.
+      }
+    };
+    window.addEventListener("storage", syncFavorites);
+    return () => window.removeEventListener("storage", syncFavorites);
+  }, []);
 
   useEffect(() => () => {
     requestRef.current?.abort();
@@ -166,12 +216,15 @@ export default function Home() {
   );
 
   const toggleFavorite = (channel: Channel) => {
-    setFavorites((current) => current.includes(channel.id)
-      ? current.filter((id) => id !== channel.id)
-      : [...current, channel.id]);
-    setFavoriteChannels((current) => current.some((item) => item.id === channel.id)
-      ? current.filter((item) => item.id !== channel.id)
-      : [...current, channel]);
+    const nextFavorites = favoriteChannels.some((item) => item.id === channel.id)
+      ? favoriteChannels.filter((item) => item.id !== channel.id)
+      : [...favoriteChannels, channel];
+    setFavoriteChannels(nextFavorites);
+    try {
+      window.localStorage.setItem("gigacast:favorites", JSON.stringify(nextFavorites));
+    } catch {
+      setError("Favorites could not be saved in this browser. Check your browser storage settings.");
+    }
   };
 
   const playChannel = (channel: Channel) => {
