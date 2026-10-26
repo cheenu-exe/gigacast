@@ -1,4 +1,4 @@
-# VLcast Web
+# GigaCast Web
 
 A browser-first, plug-and-play IPTV channel browser for Vercel. The default playlist is the public iptv-org index; viewers do not need to paste a playlist URL.
 
@@ -38,4 +38,4 @@ The API route caches upstream playlist retrieval for 30 minutes. It returns chan
 
 The playlist is a directory of publicly listed stream URLs, not a guarantee that each stream is live or licensed for every use. Browser playback depends on each broadcaster's format, codec, CORS policy, authentication, and availability. HLS playback uses hls.js where supported; native HLS is used when the browser provides it. Some transport-stream-only or DRM-protected sources will not play in a browser without additional compatible infrastructure.
 
-Use streams you are authorized to access. VLcast does not host streams, bypass DRM, or proxy video content.
+Use streams you are authorized to access. GigaCast does not host streams, bypass DRM, or proxy video content.
