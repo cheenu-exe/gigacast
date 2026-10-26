@@ -50,6 +50,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [activeGroup, setActiveGroup] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [favoriteChannels, setFavoriteChannels] = useState<Channel[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -122,7 +123,7 @@ export default function Home() {
     video.removeAttribute("src");
     video.load();
 
-    const isHls = /.m3u8(?:$|[?#])/i.test(activeChannel.url);
+    const isHls = /\\.m3u8(?:$|[?#])/i.test(activeChannel.url);
     if (isHls && Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
@@ -157,14 +158,17 @@ export default function Home() {
   }, [activeChannel]);
 
   const visibleChannels = useMemo(
-    () => showFavorites ? channels.filter((channel) => favorites.includes(channel.id)) : channels,
-    [channels, favorites, showFavorites],
+    () => showFavorites ? favoriteChannels : channels,
+    [channels, favoriteChannels, showFavorites],
   );
 
   const toggleFavorite = (channel: Channel) => {
     setFavorites((current) => current.includes(channel.id)
       ? current.filter((id) => id !== channel.id)
       : [...current, channel.id]);
+    setFavoriteChannels((current) => current.some((item) => item.id === channel.id)
+      ? current.filter((item) => item.id !== channel.id)
+      : [...current, channel]);
   };
 
   const playChannel = (channel: Channel) => {
@@ -317,7 +321,7 @@ export default function Home() {
             </div>
           )}
 
-          {!showFavorites && !loading && channels.length < total && !query && (
+          {!showFavorites && !loading && channels.length < total && (
             <button className="load-more" disabled={loadingMore} onClick={() => void loadChannels()}>
               {loadingMore ? <><LoaderCircle size={16} className="spin" /> Loading channels…</> : <>Load more channels <ChevronDown size={16} /></>}
             </button>
