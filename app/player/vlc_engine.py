@@ -109,7 +109,20 @@ class VLCPlayer:
         """Return a lowercase LibVLC state name for UI status polling."""
         try:
             state = self._player.get_state()
-            return getattr(state, "name", str(state)).lower()
+            states = (
+                (self._vlc.State.NothingSpecial, "nothing_special"),
+                (self._vlc.State.Opening, "opening"),
+                (self._vlc.State.Buffering, "buffering"),
+                (self._vlc.State.Playing, "playing"),
+                (self._vlc.State.Paused, "paused"),
+                (self._vlc.State.Stopped, "stopped"),
+                (self._vlc.State.Ended, "ended"),
+                (self._vlc.State.Error, "error"),
+            )
+            for candidate, name in states:
+                if state == candidate:
+                    return name
+            return "unknown"
         except Exception:
             return "unknown"
 
