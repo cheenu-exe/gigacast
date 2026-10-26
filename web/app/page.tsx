@@ -196,9 +196,9 @@ export default function Home() {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="VLcast home">
+        <a className="brand" href="/" aria-label="GigaCast home">
           <span className="brand-mark"><Signal size={20} strokeWidth={2.6} /></span>
-          <span className="brand-word">VL<span>cast</span></span>
+          <span className="brand-word">Giga<span>Cast</span></span>
         </a>
         <div className="topbar-center"><span className="live-dot" /> LIVE CHANNELS <span className="topbar-divider">/</span> GLOBAL STREAMS</div>
         <div className="topbar-right"><span className="status-pip" /> <span>READY TO WATCH</span></div>
