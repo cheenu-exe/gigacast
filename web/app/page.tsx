@@ -9,6 +9,8 @@ import {
   Globe2,
   Heart,
   LoaderCircle,
+  LogIn,
+  LogOut,
   Maximize,
   MonitorPlay,
   Play,
@@ -21,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 type Channel = {
   id: string;
@@ -44,6 +47,7 @@ type ChannelResponse = {
 const PAGE_SIZE = 80;
 
 export default function Home() {
+  const { data: session, status: authStatus } = useSession();
   const [channels, setChannels] = useState<Channel[]>([]);
   const [groups, setGroups] = useState<string[]>([]);
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
@@ -201,7 +205,7 @@ export default function Home() {
           <span className="brand-word">Giga<span>Cast</span></span>
         </a>
         <div className="topbar-center"><span className="live-dot" /> LIVE CHANNELS <span className="topbar-divider">/</span> GLOBAL STREAMS</div>
-        <div className="topbar-right"><span className="status-pip" /> <span>READY TO WATCH</span></div>
+        <div className="topbar-actions"><div className="topbar-right"><span className="status-pip" /> <span>READY TO WATCH</span></div>{authStatus === "loading" ? <span className="auth-loading">Checking account…</span> : session?.user ? <div className="account-control">{session.user.image ? <img className="account-avatar" src={session.user.image} alt="" referrerPolicy="no-referrer" /> : null}<span className="account-name">{session.user.name || session.user.email || "Signed in"}</span><button className="auth-button" onClick={() => void signOut()}><LogOut size={14} /> Sign out</button></div> : <button className="auth-button" onClick={() => void signIn("google")}><LogIn size={15} /> Continue with Google</button>}</div>
       </header>
 
       <div className="main-layout">
