@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vlcast"
+name = "GigaCast"
 version = "0.1.0"
 description = "A Windows desktop IPTV player powered by VLC's LibVLC engine."
 readme = "README.md"
