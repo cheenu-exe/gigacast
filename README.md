@@ -1,10 +1,10 @@
 # VLcast
 
-**A Windows desktop IPTV player powered by VLC's LibVLC engine.**
+**A plug-and-play IPTV channel browser, with a Vercel-ready web app and an optional Windows desktop prototype.**
 
-VLcast is a native Windows application shell for playing live streams from playlists you provide. LibVLC handles media playback; VLcast supplies the channel browser and controls. It does not host or supply TV channels.
+The web version lives in `web/`: it loads the default iptv-org M3U playlist automatically, lets viewers search and switch channels, and uses browser playback where streams are compatible. It does not host video streams. See [`web/README.md`](web/README.md) for local development and Vercel deployment. For Vercel, set the project Root Directory to `web`.
 
-## Current prototype
+## Desktop prototype
 
 - Dark Qt desktop interface built with PySide6
 - Embedded video surface backed by LibVLC (does not launch the separate VLC UI)
