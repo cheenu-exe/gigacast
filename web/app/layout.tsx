@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VLcast — Live TV, simplified",
-  description: "A clean, browser-first live TV experience powered by publicly available IPTV streams.",
-  applicationName: "VLcast",
+  title: "GigaCast — Global Live TV",
+  description: "Explore and watch live TV streams from around the world.",
+  applicationName: "GigaCast",
 };
 
 export const viewport: Viewport = {
