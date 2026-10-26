@@ -1,1 +1,1 @@
-"""VLcast desktop IPTV player."""
+"""GigaCast desktop IPTV player."""
