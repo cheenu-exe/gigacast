@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Packaging/build output
+build/
+dist/
+*.spec
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local playlists may contain private URLs
+*.m3u
+*.m3u8
+!tests/fixtures/*.m3u
+!tests/fixtures/*.m3u8
+
+# Environment/local configuration
+.env
+.env.*
+!.env.example
