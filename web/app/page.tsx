@@ -176,7 +176,7 @@ export default function Home() {
     video.removeAttribute("src");
     video.load();
 
-    const isHls = /\\.m3u8(?:$|[?#])/i.test(activeChannel.url);
+    const isHls = /\.m3u8(?:$|[?#])/i.test(activeChannel.url);
     if (isHls && Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
