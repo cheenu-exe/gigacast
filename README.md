@@ -1,4 +1,4 @@
-# VLcast
+# GigaCast
 
 **A plug-and-play IPTV channel browser, with a Vercel-ready web app and an optional Windows desktop prototype.**
 
@@ -81,6 +81,6 @@ M3U playlists are channel catalogues; they do not guarantee that each URL is onl
 
 ## Legal and responsible use
 
-Use streams and playlists you own or are authorized to access. A publicly reachable URL is not automatically licensed for redistribution. VLcast does not bundle channel URLs or bypass DRM/access controls.
+Use streams and playlists you own or are authorized to access. A publicly reachable URL is not automatically licensed for redistribution. GigaCast does not bundle channel URLs or bypass DRM/access controls.
 
 The project source is licensed under MIT (see LICENSE). VLC/LibVLC and third-party components have their own licenses. Review the applicable terms before redistributing a packaged application or VLC binaries.
