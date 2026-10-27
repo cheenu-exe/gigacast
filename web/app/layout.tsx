@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   title: "GigaCast — Global Live TV",
   description: "Explore and watch live TV streams from around the world.",
   applicationName: "GigaCast",
+  icons: {
+    icon: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "64x64" }],
+    shortcut: "/favicon.jpg",
+  },
 };
 
 export const viewport: Viewport = {
