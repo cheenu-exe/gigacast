@@ -41,7 +41,7 @@ function parseM3U(source: string): Channel[] {
       const group = readAttribute(metadata, "group-title") || "Other";
       const tvgId = readAttribute(metadata, "tvg-id");
       channels.push({
-        id: tvgId || `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${index}`,
+        id: `${(tvgId || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"))}-${index}`,
         name,
         url: line,
         logo: readAttribute(metadata, "tvg-logo"),
@@ -78,7 +78,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "The configured source did not return a valid M3U playlist." }, { status: 502 });
     }
 
-    const allChannels = parseM3U(rawPlaylist);
+    const channelsFromDefault = parseM3U(rawPlaylist);
+    const extraPlaylistUrl = process.env.IPTV_EXTRA_PLAYLIST_URL;
+    let channelsFromExtra: Channel[] = [];
+
+    if (extraPlaylistUrl) {
+      try {
+        const extraResponse = await fetch(extraPlaylistUrl, {
+          headers: { Accept: "audio/x-mpegurl, application/vnd.apple.mpegurl, text/plain, */*" },
+          next: { revalidate: 1800 },
+          signal: AbortSignal.timeout(20_000),
+        });
+        if (extraResponse.ok) {
+          const extraText = await extraResponse.text();
+          if (extraText.includes("#EXTM3U")) channelsFromExtra = parseM3U(extraText);
+        }
+      } catch {
+        // Keep the primary IPTV-org catalogue available if the optional source is offline.
+      }
+    }
+
+    const seenUrls = new Set<string>();
+    const allChannels = [...channelsFromDefault, ...channelsFromExtra].filter((channel) => {
+      if (seenUrls.has(channel.url)) return false;
+      seenUrls.add(channel.url);
+      return true;
+    });
     const query = (request.nextUrl.searchParams.get("q") || "").trim().toLocaleLowerCase();
     const group = request.nextUrl.searchParams.get("group") || "";
     const offset = Math.max(0, Number.parseInt(request.nextUrl.searchParams.get("offset") || "0", 10) || 0);
@@ -100,7 +125,7 @@ export async function GET(request: NextRequest) {
         offset,
         limit,
         groups,
-        source: "iptv-org",
+        source: extraPlaylistUrl ? "multi-source" : "iptv-org",
       },
       {
         headers: {
