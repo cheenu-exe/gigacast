@@ -37,11 +37,14 @@ Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXTAUTH_SECRET`, and `NEXTAUTH
 3. Use the Next.js framework preset.
 4. Deploy. The app defaults to `https://iptv-org.github.io/iptv/index.m3u`.
 
-Optional environment variable:
+Optional environment variables:
 
-- `IPTV_PLAYLIST_URL`: override the default playlist URL on the server. Do not prefix this variable with `NEXT_PUBLIC_`.
+- `IPTV_PLAYLIST_URL`: override the default playlist URL on the server.
+- `IPTV_EXTRA_PLAYLIST_URL`: merge a second authorized M3U playlist into the channel catalogue.
 
-The API route caches upstream playlist retrieval for 30 minutes. It returns channel metadata in pages to avoid shipping the entire index to the browser at once.
+Keep both variables server-side (never prefix them with `NEXT_PUBLIC_`). The extra playlist must be hosted at an HTTPS URL that Vercel can fetch. If the optional source is unavailable, the primary iptv-org catalogue still loads.
+
+The API route caches upstream playlist retrieval for 30 minutes, merges the two catalogues, removes duplicate stream URLs, and returns channel metadata in pages. Each playlist entry receives a unique channel ID so repeated TVG IDs do not collide in favorites.
 
 ## Playback notes
 
