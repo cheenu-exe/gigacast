@@ -308,7 +308,7 @@ export default function Home() {
           </div>
 
           <div className="sidebar-footer">
-            <div className="source-badge"><span className="source-icon"><Radio size={15} /></span><span><strong>IPTV-ORG</strong><small>Community playlist</small></span><Check size={14} className="source-check" /></div>
+            <div className="source-badge"><span className="source-icon"><Radio size={15} /></span><span><strong>MULTI-SOURCE</strong><small>Community + added playlists</small></span><Check size={14} className="source-check" /></div>
             <p>Publicly listed streams. Availability and playback depend on each broadcaster.</p>
           </div>
         </aside>
