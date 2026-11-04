@@ -43,7 +43,7 @@ type ChannelResponse = {
   error?: string;
 };
 
-const PAGE_SIZE = 80;
+const PAGE_SIZE = 80;\nconst CATEGORY_TITLES: Record<string, string> = { all: "Explore channels", tamil: "Tamil channels", cartoons: "Cartoons", sports: "Sports", news: "News", other: "Other channels" };
 
 export default function Home() {
   const { data: session, status: authStatus } = useSession();
@@ -368,7 +368,7 @@ export default function Home() {
           </section>
 
           <div className="section-heading">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> THE LINEUP</div><h2>{showFavorites ? "Your favorites" : query ? "Search results" : activeGroup || ({ all: "Explore channels", tamil: "Tamil channels", cartoons: "Cartoons", sports: "Sports", news: "News", other: "Other channels" }[activeCategory] || "Explore channels") }</h2></div>
+            <div><div className="eyebrow"><span className="eyebrow-line" /> THE LINEUP</div><h2>{showFavorites ? "Your favorites" : query ? "Search results" : activeGroup || (CATEGORY_TITLES[activeCategory] || "Explore channels") }</h2></div>
             <div className="result-meta">{loading ? "Loading…" : `${visibleChannels.length.toLocaleString()} shown`} <span className="result-divider">/</span> {total.toLocaleString()} total</div>
           </div>
 
