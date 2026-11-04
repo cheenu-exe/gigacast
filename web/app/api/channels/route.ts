@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DEFAULT_PLAYLIST = "https://iptv-org.github.io/iptv/index.m3u";
-const PAGE_SIZE = 80;\n\nconst TAMIL_CHANNEL_ORDER = [\n  "sun tv",\n  "star vijay",\n  "zee tamil",\n  "colors tamil",\n  "jaya tv",\n  "kalaignar tv",\n  "sun music",\n  "vijay music",\n  "ktv",\n];\n\nfunction categoryFor(channel: Channel): string {\n  const name = channel.name.toLowerCase();\n  const normalizedName = name.replace(/[^a-z0-9]+/g, " ").trim();\n  const group = channel.group.toLowerCase();\n  if (TAMIL_CHANNEL_ORDER.some((item) => normalizedName === item || normalizedName.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";\n  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";\n  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";\n  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";\n  return "other";\n}\n
+const PAGE_SIZE = 80;
+
+const TAMIL_CHANNEL_ORDER = [\n  "sun tv",\n  "star vijay",\n  "zee tamil",\n  "colors tamil",\n  "jaya tv",\n  "kalaignar tv",\n  "sun music",\n  "vijay music",\n  "ktv",\n];\n\nfunction categoryFor(channel: Channel): string {\n  const name = channel.name.toLowerCase();\n  const normalizedName = name.replace(/[^a-z0-9]+/g, " ").trim();\n  const group = channel.group.toLowerCase();\n  if (TAMIL_CHANNEL_ORDER.some((item) => normalizedName === item || normalizedName.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";\n  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";\n  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";\n  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";\n  return "other";\n}\n
 
 type Channel = {
   id: string;
@@ -105,13 +107,25 @@ export async function GET(request: NextRequest) {
       return true;
     });
     const query = (request.nextUrl.searchParams.get("q") || "").trim().toLocaleLowerCase();
-    const group = request.nextUrl.searchParams.get("group") || "";\n    const category = request.nextUrl.searchParams.get("category") || "all";
+    const group = request.nextUrl.searchParams.get("group") || "";
+    const category = request.nextUrl.searchParams.get("category") || "all";
     const offset = Math.max(0, Number.parseInt(request.nextUrl.searchParams.get("offset") || "0", 10) || 0);
     const requestedLimit = Number.parseInt(request.nextUrl.searchParams.get("limit") || String(PAGE_SIZE), 10) || PAGE_SIZE;
     const limit = Math.min(100, Math.max(1, requestedLimit));
 
     const groups = [...new Set(allChannels.map((channel) => channel.group))].sort((a, b) => a.localeCompare(b));
-    const filtered = allChannels.filter((channel) => {
+    const categorizedChannels = category === "tamil"
+      ? [...allChannels].sort((a, b) => {
+          const rank = (channel: Channel) => {
+            const name = channel.name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+            const index = TAMIL_CHANNEL_ORDER.findIndex((item) => name === item || name.startsWith(`${item} `));
+            return index < 0 ? TAMIL_CHANNEL_ORDER.length : index;
+          };
+          return rank(a) - rank(b);
+        })
+      : allChannels;
+    const filtered = categorizedChannels.filter((channel) => {
+      const matchesCategory = category === "all" || categoryFor(channel) === category;
       const matchesGroup = !group || channel.group === group;
       const matchesQuery = !query || [channel.name, channel.group, channel.tvgId, channel.country]
         .some((value) => value.toLocaleLowerCase().includes(query));
