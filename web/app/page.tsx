@@ -52,6 +52,7 @@ export default function Home() {
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [query, setQuery] = useState("");
   const [activeGroup, setActiveGroup] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
   const [favoriteChannels, setFavoriteChannels] = useState<Channel[]>([]);
   const favorites = useMemo(() => favoriteChannels.map((channel) => channel.id), [favoriteChannels]);
   const [showFavorites, setShowFavorites] = useState(false);
@@ -66,7 +67,7 @@ export default function Home() {
   const hlsRef = useRef<Hls | null>(null);
   const requestRef = useRef<AbortController | null>(null);
 
-  const loadChannels = useCallback(async (options?: { reset?: boolean; q?: string; group?: string }) => {
+  const loadChannels = useCallback(async (options?: { reset?: boolean; q?: string; group?: string; category?: string }) => {
     const reset = options?.reset ?? false;
     if (requestRef.current) requestRef.current.abort();
     const controller = new AbortController();
@@ -82,6 +83,7 @@ export default function Home() {
       offset: String(nextOffset),
       q: options?.q ?? query,
       group: options?.group ?? activeGroup,
+      category: options?.category ?? activeCategory,
     });
 
     try {
@@ -101,14 +103,14 @@ export default function Home() {
         setLoadingMore(false);
       }
     }
-  }, [activeGroup, offset, query]);
+  }, [activeCategory, activeGroup, offset, query]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      void loadChannels({ reset: true, q: query, group: activeGroup });
+      void loadChannels({ reset: true, q: query, group: activeGroup, category: activeCategory });
     }, query || activeGroup ? 220 : 0);
     return () => window.clearTimeout(timer);
-  }, [query, activeGroup]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [query, activeGroup, activeCategory]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     try {
@@ -300,7 +302,7 @@ export default function Home() {
             <label className="group-select-wrap">
               <Globe2 size={15} />
               <select value={activeGroup} onChange={(event) => { setActiveGroup(event.target.value); setOffset(0); }} aria-label="Filter by category">
-                <option value="">All categories</option>
+                <option value="">All channel groups</option>
                 {groups.map((group) => <option key={group} value={group}>{group}</option>)}
               </select>
               <ChevronDown size={15} />
@@ -366,7 +368,7 @@ export default function Home() {
           </section>
 
           <div className="section-heading">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> THE LINEUP</div><h2>{showFavorites ? "Your favorites" : query ? "Search results" : activeGroup || "Explore channels"}</h2></div>
+            <div><div className="eyebrow"><span className="eyebrow-line" /> THE LINEUP</div><h2>{showFavorites ? "Your favorites" : query ? "Search results" : activeGroup || ({ all: "Explore channels", tamil: "Tamil channels", cartoons: "Cartoons", sports: "Sports", news: "News", other: "Other channels" }[activeCategory] || "Explore channels") }</h2></div>
             <div className="result-meta">{loading ? "Loading…" : `${visibleChannels.length.toLocaleString()} shown`} <span className="result-divider">/</span> {total.toLocaleString()} total</div>
           </div>
 
