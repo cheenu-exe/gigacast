@@ -16,6 +16,7 @@ const TAMIL_CHANNEL_ORDER = [
   "raj tv",
   "sun music",
   "vijay music",
+  "vijay takkar",
   "isaiaruvi",
   "raj musix",
   "sun news",
