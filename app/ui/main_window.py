@@ -1,4 +1,4 @@
-"""Main VLcast window."""
+"""Main GigaCast window."""
 
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("VLcast")
+        self.setWindowTitle("GigaCast")
         self.resize(1280, 800)
         self.setMinimumSize(900, 560)
 
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
             self.engine_status.setText("VLC engine unavailable")
             self._show_placeholder(
                 "Install VLC Media Player for Windows\n"
-                "Then restart VLcast to enable playback."
+                "Then restart GigaCast to enable playback."
             )
             self.statusBar().showMessage(str(exc), 12000)
 
@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
         root_layout.setSpacing(12)
 
         header = QHBoxLayout()
-        brand = QLabel("VLCAST")
+        brand = QLabel("GigaCast")
         brand.setObjectName("brand")
         tagline = QLabel("Live TV, powered by VLC")
         tagline.setObjectName("muted")
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         self.video_surface_layout = QVBoxLayout(self.video_surface)
         self.video_surface_layout.setContentsMargins(20, 20, 20, 20)
         self.placeholder = QLabel(
-            "VLCAST\n\nOpen an M3U playlist or add a stream URL to begin."
+            "GigaCast\n\nOpen an M3U playlist or add a stream URL to begin."
         )
         self.placeholder.setObjectName("placeholder")
         self.placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -434,7 +434,7 @@ class MainWindow(QMainWindow):
             self.playback_status.setText("VLC is not installed or could not be loaded.")
             self._show_placeholder(
                 "VLC playback engine unavailable\n\n"
-                "Install VLC for Windows and restart VLcast."
+                "Install VLC for Windows and restart GigaCast."
             )
             return
         try:
@@ -531,7 +531,7 @@ class MainWindow(QMainWindow):
             self,
             "VLC runtime unavailable",
             "Install 64-bit VLC Media Player from https://www.videolan.org/vlc/, "
-            "then restart VLcast. Python and VLC must use matching architectures.",
+            "then restart GigaCast. Python and VLC must use matching architectures.",
         )
 
     def closeEvent(self, event) -> None:  # noqa: N802 - Qt override naming

@@ -1,4 +1,4 @@
-"""Start the VLcast Windows desktop application."""
+"""Start the GigaCast Windows desktop application."""
 
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ from app.ui.main_window import MainWindow
 
 def main() -> int:
     app = QApplication(sys.argv)
-    app.setApplicationName("VLcast")
-    app.setOrganizationName("VLcast")
+    app.setApplicationName("GigaCast")
+    app.setOrganizationName("GigaCast")
     window = MainWindow()
     window.show()
     return app.exec()

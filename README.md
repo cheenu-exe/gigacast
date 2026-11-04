@@ -1,10 +1,10 @@
-# VLcast
+# GigaCast
 
-**A Windows desktop IPTV player powered by VLC's LibVLC engine.**
+**A plug-and-play IPTV channel browser, with a Vercel-ready web app and an optional Windows desktop prototype.**
 
-VLcast is a native Windows application shell for playing live streams from playlists you provide. LibVLC handles media playback; VLcast supplies the channel browser and controls. It does not host or supply TV channels.
+The web version lives in `web/`: it loads the default iptv-org M3U playlist automatically, lets viewers search and switch channels, and uses browser playback where streams are compatible. It does not host video streams. See [`web/README.md`](web/README.md) for local development and Vercel deployment. For Vercel, set the project Root Directory to `web`.
 
-## Current prototype
+## Desktop prototype
 
 - Dark Qt desktop interface built with PySide6
 - Embedded video surface backed by LibVLC (does not launch the separate VLC UI)
@@ -81,6 +81,6 @@ M3U playlists are channel catalogues; they do not guarantee that each URL is onl
 
 ## Legal and responsible use
 
-Use streams and playlists you own or are authorized to access. A publicly reachable URL is not automatically licensed for redistribution. VLcast does not bundle channel URLs or bypass DRM/access controls.
+Use streams and playlists you own or are authorized to access. A publicly reachable URL is not automatically licensed for redistribution. GigaCast does not bundle channel URLs or bypass DRM/access controls.
 
 The project source is licensed under MIT (see LICENSE). VLC/LibVLC and third-party components have their own licenses. Review the applicable terms before redistributing a packaged application or VLC binaries.
