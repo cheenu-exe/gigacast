@@ -13,19 +13,22 @@ const TAMIL_CHANNEL_ORDER = [
   "sun music",
   "vijay music",
   "ktv",
+  "jaya plus",
+  "thanthi one",
+  "polimer tv",
+  "dd tamil",
+  "ntc tv",
+  "m nadu tv",
+  "jaya movie",
+  "adithya tv",
+  "chithiram",
+  "ultimate tv",
+  "thalaa tv",
+  "thanthi tv",
+  "sathiyam tv",
+  "zee tamil news",
+  "om tv",
 ];
-
-function categoryFor(channel: Channel): string {
-  const name = channel.name.toLowerCase();
-  const normalizedName = name.replace(/[^a-z0-9]+/g, " ").trim();
-  const group = channel.group.toLowerCase();
-  if (TAMIL_CHANNEL_ORDER.some((item) => normalizedName === item || normalizedName.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";
-  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";
-  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";
-  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";
-  return "other";
-}
-
 
 type Channel = {
   id: string;
@@ -36,6 +39,20 @@ type Channel = {
   country: string;
   tvgId: string;
 };
+
+function normalized(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function categoryFor(channel: Channel): string {
+  const name = normalized(channel.name);
+  const group = channel.group.toLowerCase();
+  if (TAMIL_CHANNEL_ORDER.some((item) => name === item || name.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";
+  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";
+  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";
+  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";
+  return "other";
+}
 
 function readAttribute(line: string, key: string): string {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -139,7 +156,7 @@ export async function GET(request: NextRequest) {
     const categorizedChannels = category === "tamil"
       ? [...allChannels].sort((a, b) => {
           const rank = (channel: Channel) => {
-            const name = channel.name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+            const name = normalized(channel.name);
             const index = TAMIL_CHANNEL_ORDER.findIndex((item) => name === item || name.startsWith(`${item} `));
             return index < 0 ? TAMIL_CHANNEL_ORDER.length : index;
           };
