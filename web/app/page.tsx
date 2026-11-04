@@ -43,7 +43,8 @@ type ChannelResponse = {
   error?: string;
 };
 
-const PAGE_SIZE = 80;\nconst CATEGORY_TITLES: Record<string, string> = { all: "Explore channels", tamil: "Tamil channels", cartoons: "Cartoons", sports: "Sports", news: "News", other: "Other channels" };
+const PAGE_SIZE = 80;
+const CATEGORY_TITLES: Record<string, string> = { all: "Explore channels", tamil: "Tamil channels", cartoons: "Cartoons", sports: "Sports", news: "News", other: "Other channels" };
 
 export default function Home() {
   const { data: session, status: authStatus } = useSession();
