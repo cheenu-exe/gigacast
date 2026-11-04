@@ -3,7 +3,29 @@ import { NextRequest, NextResponse } from "next/server";
 const DEFAULT_PLAYLIST = "https://iptv-org.github.io/iptv/index.m3u";
 const PAGE_SIZE = 80;
 
-const TAMIL_CHANNEL_ORDER = [\n  "sun tv",\n  "star vijay",\n  "zee tamil",\n  "colors tamil",\n  "jaya tv",\n  "kalaignar tv",\n  "sun music",\n  "vijay music",\n  "ktv",\n];\n\nfunction categoryFor(channel: Channel): string {\n  const name = channel.name.toLowerCase();\n  const normalizedName = name.replace(/[^a-z0-9]+/g, " ").trim();\n  const group = channel.group.toLowerCase();\n  if (TAMIL_CHANNEL_ORDER.some((item) => normalizedName === item || normalizedName.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";\n  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";\n  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";\n  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";\n  return "other";\n}\n
+const TAMIL_CHANNEL_ORDER = [
+  "sun tv",
+  "star vijay",
+  "zee tamil",
+  "colors tamil",
+  "jaya tv",
+  "kalaignar tv",
+  "sun music",
+  "vijay music",
+  "ktv",
+];
+
+function categoryFor(channel: Channel): string {
+  const name = channel.name.toLowerCase();
+  const normalizedName = name.replace(/[^a-z0-9]+/g, " ").trim();
+  const group = channel.group.toLowerCase();
+  if (TAMIL_CHANNEL_ORDER.some((item) => normalizedName === item || normalizedName.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";
+  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";
+  if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";
+  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";
+  return "other";
+}
+
 
 type Channel = {
   id: string;
