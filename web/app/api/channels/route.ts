@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const DEFAULT_PLAYLIST = "https://iptv-org.github.io/iptv/index.m3u";
-const PAGE_SIZE = 80;
+const PAGE_SIZE = 80;\n\nconst TAMIL_CHANNEL_ORDER = [\n  "sun tv",\n  "star vijay",\n  "zee tamil",\n  "colors tamil",\n  "jaya tv",\n  "kalaignar tv",\n  "sun music",\n  "vijay music",\n  "ktv",\n];\n\nfunction categoryFor(channel: Channel): string {\n  const name = channel.name.toLowerCase();\n  const group = channel.group.toLowerCase();\n  if (TAMIL_CHANNEL_ORDER.some((item) => name === item || name.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";\n  if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";\n  if (/sport/.test(group) || /sports?|ten|espn|star sports|sony six/.test(name)) return "sports";\n  if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";\n  return "other";\n}\n
 
 type Channel = {
   id: string;
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
       return true;
     });
     const query = (request.nextUrl.searchParams.get("q") || "").trim().toLocaleLowerCase();
-    const group = request.nextUrl.searchParams.get("group") || "";
+    const group = request.nextUrl.searchParams.get("group") || "";\n    const category = request.nextUrl.searchParams.get("category") || "all";
     const offset = Math.max(0, Number.parseInt(request.nextUrl.searchParams.get("offset") || "0", 10) || 0);
     const requestedLimit = Number.parseInt(request.nextUrl.searchParams.get("limit") || String(PAGE_SIZE), 10) || PAGE_SIZE;
     const limit = Math.min(100, Math.max(1, requestedLimit));
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
       const matchesGroup = !group || channel.group === group;
       const matchesQuery = !query || [channel.name, channel.group, channel.tvgId, channel.country]
         .some((value) => value.toLocaleLowerCase().includes(query));
-      return matchesGroup && matchesQuery;
+      return matchesCategory && matchesGroup && matchesQuery;
     });
 
     return NextResponse.json(
