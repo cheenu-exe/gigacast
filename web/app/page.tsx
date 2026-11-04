@@ -292,7 +292,22 @@ export default function Home() {
           </button>
 
           <div className="sidebar-section">
-            <div className="sidebar-heading">DISCOVER</div>
+            <div className="sidebar-heading">CATEGORIES</div>
+            <nav className="category-nav" aria-label="Channel categories">
+              {[
+                ["all", "All channels"],
+                ["tamil", "Tamil channels"],
+                ["cartoons", "Cartoons"],
+                ["sports", "Sports"],
+                ["news", "News"],
+                ["other", "Other"],
+              ].map(([value, label]) => (
+                <button key={value} className={`category-item ${activeCategory === value ? "selected" : ""}`} onClick={() => { setActiveCategory(value); setActiveGroup(""); setOffset(0); setShowFavorites(false); }}>
+                  <span>{label}</span><span className="category-chevron">{activeCategory === value ? "›" : ""}</span>
+                </button>
+              ))}
+            </nav>
+            <div className="sidebar-heading discover-heading">DISCOVER</div>
             <label className="search-box">
               <Search size={16} />
               <input value={query} onChange={(event) => { setQuery(event.target.value); setOffset(0); }} placeholder="Find a channel..." aria-label="Search channels" />
