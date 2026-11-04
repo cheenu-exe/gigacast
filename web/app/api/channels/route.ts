@@ -5,16 +5,12 @@ const PAGE_SIZE = 80;
 
 const TAMIL_CHANNEL_ORDER = [
   "sun tv",
-  "sun tv hd",
   "star vijay",
-  "star vijay hd",
   "zee tamil",
-  "zee tamil hd",
   "colors tamil",
   "jaya tv",
   "jaya max",
   "kalaignar tv",
-  "ktv",
   "zee thirai",
   "vijay super",
   "raj tv",
@@ -42,6 +38,7 @@ type Channel = {
   logo: string;
   group: string;
   country: string;
+  language: string;
   tvgId: string;
 };
 
@@ -52,7 +49,9 @@ function normalized(value: string): string {
 function categoryFor(channel: Channel): string {
   const name = normalized(channel.name);
   const group = channel.group.toLowerCase();
-  if (TAMIL_CHANNEL_ORDER.some((item) => name === item || name.startsWith(`${item} `)) || group.includes("tamil")) return "tamil";
+  const language = channel.language.toLowerCase();
+  const isKnownTamil = TAMIL_CHANNEL_ORDER.some((item) => name === item || name.startsWith(`${item} `));
+  if (isKnownTamil || language.includes("tamil") || group.includes("tamil")) return "tamil";
   if (/cartoon|kids|animation/.test(group) || /nick|cartoon|disney|hungama|pogo|sonic/.test(name)) return "cartoons";
   if (/sport/.test(group) || /\b(sports?|ten|espn|star sports|sony six)\b/.test(name)) return "sports";
   if (/news/.test(group) || /news|republic|ndtv|aaj tak|india tv|times now|cnn|bbc news/.test(name)) return "news";
@@ -93,6 +92,7 @@ function parseM3U(source: string): Channel[] {
         logo: readAttribute(metadata, "tvg-logo"),
         group,
         country: readAttribute(metadata, "tvg-country"),
+        language: readAttribute(metadata, "tvg-language"),
         tvgId,
       });
       index += 1;
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
     const filtered = categorizedChannels.filter((channel) => {
       const matchesCategory = category === "all" || categoryFor(channel) === category;
       const matchesGroup = !group || channel.group === group;
-      const matchesQuery = !query || [channel.name, channel.group, channel.tvgId, channel.country]
+      const matchesQuery = !query || [channel.name, channel.group, channel.tvgId, channel.country, channel.language]
         .some((value) => value.toLocaleLowerCase().includes(query));
       return matchesCategory && matchesGroup && matchesQuery;
     });
